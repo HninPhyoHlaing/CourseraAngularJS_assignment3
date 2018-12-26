@@ -24,10 +24,11 @@
                 MenuSearchService.getMatchedMenuItems(menu.searchTerm)                                    
                                  .then(function (response) 
                                  { 
-                                    if(response)
-                                    {
+                                    if(response.length > 0)
+                                    {                                        
                                       menu.warningMsg = false;
-                                      menu.foundItems = MenuSearchService.addItem(response);
+                                      for(var i=0;i<response.length;i++)
+                                         menu.foundItems = MenuSearchService.addItem(response[i]);
                                     }
                                     else
                                       menu.warningMsg = true;
@@ -70,12 +71,13 @@
                         })
                         .then(function (response) 
                         {
-                            var founditem;
+                            var founditem=[];
                             for(var i=0;i<response.data.menu_items.length;i++)
                             {   
-                                if(response.data.menu_items[i].name == searchTerm)                                        
-                                founditem = response.data.menu_items[i];  
+                                if(response.data.menu_items[i].description.indexOf(searchTerm) > -1)                                        
+                                founditem.push(response.data.menu_items[i]);  
                             } 
+                            console.log(founditem);
                             return founditem;                                          
                         });           
            

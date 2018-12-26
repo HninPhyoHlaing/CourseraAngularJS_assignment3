@@ -1,9 +1,7 @@
 <!-- <h2><span ng-if="menu.searchItem">Search Item: </span>{{ menu.searchItem }}</h2> -->
 <ol>
     <li ng-repeat="item in menu.items">
-      {{item.short_name}} 
-      <br/>
-      {{ item.name }} - {{ item.description }}     
+      {{item.short_name}} : {{ item.name }} - {{ item.description }}     
       <button ng-click="menu.onRemove({index: $index});">Don't want this one!</button>
     </li>
   </ol>
