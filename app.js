@@ -21,8 +21,21 @@
                menu.warningMsg = true;
             else
             {
-                menu.foundItems =  MenuSearchService.getMatchedMenuItems(menu.searchTerm);
-                menu.warningMsg = false;
+                MenuSearchService.getMatchedMenuItems(menu.searchTerm)                                    
+                                 .then(function (response) 
+                                 { 
+                                    if(response)
+                                    {
+                                      menu.warningMsg = false;
+                                      menu.foundItems = MenuSearchService.addItem(response);
+                                    }
+                                    else
+                                      menu.warningMsg = true;
+
+                                 })
+                                 .catch(function (error) {
+                                     console.log("Something went terribly wrong.");
+                                 });                
             }
             
         };
@@ -38,7 +51,7 @@
     function MenuSearchService($http, ApiBasePath) 
     {
         var service = this;
-        var items = [];
+        var items = [];        
 
         service.getAllMenuItems = function(){
             var response = $http({
@@ -50,22 +63,27 @@
 
         
         service.getMatchedMenuItems = function (searchTerm) {        
-            var promise = service.getAllMenuItems();
-            promise.then(function (response) {
-                for(var i=0;i<response.data.menu_items.length;i++)
-                {   
-                    if(response.data.menu_items[i].name == searchTerm)                                        
-                       service.addItem(response.data.menu_items[i]);  
-                }                                           
-            })
-            .catch(function (error) {
-                console.log("Something went terribly wrong.");
-            });            
-            return items;
+            //var promise = service.getAllMenuItems();
+            return $http({
+                            method: "GET",
+                            url: (ApiBasePath + "/menu_items.json")               
+                        })
+                        .then(function (response) 
+                        {
+                            var founditem;
+                            for(var i=0;i<response.data.menu_items.length;i++)
+                            {   
+                                if(response.data.menu_items[i].name == searchTerm)                                        
+                                founditem = response.data.menu_items[i];  
+                            } 
+                            return founditem;                                          
+                        });           
+           
         };
 
         service.addItem = function (item) {
-            items.push(item);             
+            items.push(item);   
+            return items;          
         };
 
         service.removeItem = function (itemIndex) {
