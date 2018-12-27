@@ -12,11 +12,11 @@
     {
         var menu = this;
         menu.searchTerm = "";
-        menu.foundItems = [];   
+        menu.foundItems =[] ;   
         menu.warningMsg = false;     
 
         menu.narrowDown = function () 
-        {       
+        {   
             if(menu.searchTerm.trim() == "")
                menu.warningMsg = true;
             else
@@ -27,11 +27,15 @@
                                     if(response.length > 0)
                                     {                                        
                                       menu.warningMsg = false;
+                                      MenuSearchService.clearItem();
                                       for(var i=0;i<response.length;i++)
                                          menu.foundItems = MenuSearchService.addItem(response[i]);
                                     }
                                     else
+                                    {
+                                      MenuSearchService.clearItem();  
                                       menu.warningMsg = true;
+                                    }
 
                                  })
                                  .catch(function (error) {
@@ -82,6 +86,11 @@
                         });           
            
         };
+
+        service.clearItem = function()
+        {
+            items = [];
+        }
 
         service.addItem = function (item) {
             items.push(item);   
